@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>एस्टीमेट</title>
 <link rel="stylesheet" href="style.css">
+<script src="theme.js"></script>
 </head>
 <body>
 
@@ -14,6 +15,7 @@
     <span id="saveStatus" class="save-status"></span>
   </div>
   <div class="right">
+    <button class="theme-toggle no-print" onclick="toggleTheme()"></button>
     <button class="btn" id="saveBtn" onclick="saveBill()">&#128190; सेव करें</button>
   </div>
 </div>
@@ -27,13 +29,10 @@
   <button class="btn" onclick="removeLastPage()">&#128465;&#65039; अंतिम पेज हटाएं</button>
   <button class="btn alt" onclick="resetManual()">&#8634; ऑटो कैलकुलेशन पर लौटें</button>
   <button class="btn" onclick="downloadPDF()">&#128196; Save as PDF</button>
+  <button class="btn share" id="shareBtn" onclick="sharePDF()">&#128228; शेयर करें (WhatsApp, Bluetooth आदि)</button>
   <button class="btn" onclick="window.print()">&#128424;&#65039; प्रिंट करें</button>
   <div>अंतिम ग्रैंड टोटल: <span id="finalGrandTotal">&#8377; 0.00</span></div>
-  <div class="hint">
-    AMOUNT अपने आप RATE के बराबर बनता है &mdash; ज़रूरत हो तो AMOUNT में सीधे अपनी वैल्यू टाइप करें (ऐसा फ़ील्ड नीला दिखेगा, प्रिंट में काला)। खाली करने पर वापस अपने आप गिनने लगेगा।<br>
-    DETAILS में एक से ज़्यादा लाइन लिखने पर वह पंक्ति अपने आप बड़ी हो जाएगी, और पेज में बची जगह के अनुसार पंक्तियाँ अपने आप अगले पेज में शिफ्ट हो जाएँगी।<br>
-    ऊपर "सेव करें" दबाने पर यह एस्टीमेट सर्वर पर सेव हो जाता है और किसी भी डिवाइस से खोला जा सकता है।
-  </div>
+ 
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
