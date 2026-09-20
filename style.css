@@ -1,0 +1,152 @@
+:root{
+    --ink:#000;
+    --accent:#c00000;
+    --line:#000;
+    --totalbg:#ffe9e9;
+    --manual:#0a58ca;
+  }
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:"Arial", sans-serif;
+    background:#f9f9f9;
+    color:var(--ink);
+  }
+
+  #pages{font-size:0;}
+  #pages > *{font-size:16px;}
+
+  .invoice-box{
+    position:relative;
+    width:210mm;
+    min-height:292mm;
+    padding:8mm 12mm 12mm 12mm;
+    margin:10px auto;
+    background:#fff;
+    box-sizing:border-box;
+    border:2px solid var(--line);
+    box-shadow:0 0 6px rgba(0,0,0,.15);
+    display:flex;
+    flex-direction:column;
+  }
+  .invoice-box:not(:last-child){ page-break-after:always; break-after:page; }
+  .invoice-box:last-child{ page-break-after:auto; break-after:auto; }
+
+  .header{ text-align:center; color:var(--accent); border-bottom:2px solid var(--line); padding:2px 0; margin:0 0 8px 0; }
+  .header h2{ margin:2px 0; font-size:26px; line-height:1.1; }
+  .header p{ margin:2px 0; font-size:15px; line-height:1.2; }
+
+  .info{ display:flex; justify-content:space-between; gap:10px; margin:10px 0; border:1px solid var(--line); padding:5px; }
+  .info > div{ flex:1; }
+  .info > div + div{ flex:0 0 38%; }
+
+  input, textarea{ border:none; font-size:16px; padding:4px; text-align:left; width:100%; box-sizing:border-box; font-family:inherit; background:transparent; }
+  textarea{ resize:none; min-height:30px; height:30px; overflow:hidden; line-height:1.3; }
+  input:focus, textarea:focus{ outline:1px dashed #999; }
+  .bold-text{ font-weight:bold; }
+
+  input.manual{ color:var(--manual); }
+
+  table{ width:100%; border-collapse:collapse; margin-top:5px; }
+  th, td{ border:1px solid var(--line); padding:6px; text-align:center; vertical-align:middle; }
+  th{ background:#f2f2f2; font-size:14px; }
+
+  input[type=number]{ -moz-appearance:textfield; }
+  input[type=number]::-webkit-outer-spin-button,
+  input[type=number]::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+
+  .page-total-row td{
+    background:var(--totalbg);
+    font-weight:bold;
+    font-size:17px;
+    letter-spacing:.3px;
+    border-top:2px solid var(--line);
+  }
+  .page-total-row .ptl{ text-align:right; padding-right:12px; color:var(--accent); }
+  .page-total-row input{ font-weight:bold; font-size:17px; color:var(--accent); text-align:center; }
+  .page-total-row input.manual{ color:var(--manual); }
+
+  .spacer{ flex:1 1 auto; }
+
+  .footer{ margin-top:10px; display:flex; justify-content:space-between; gap:10px; font-weight:bold; border:1px solid var(--line); padding:5px; }
+  .footer > div{ display:flex; align-items:center; gap:6px; flex:1; white-space:nowrap; }
+  .footer > div + div{ flex:0 0 40%; }
+  .footer input{ font-weight:bold; }
+
+  .all-total{
+    margin-top:8px; padding:6px 10px; border:2px solid var(--accent);
+    background:var(--totalbg); font-weight:bold; font-size:18px; text-align:right; color:var(--accent);
+  }
+  .hidden{ display:none !important; }
+
+  .page-num{ margin-top:6px; text-align:center; font-size:12px; color:#555; }
+
+  .page-remove{
+    position:absolute; top:6px; right:6px;
+    width:26px; height:26px; line-height:22px; text-align:center;
+    background:var(--accent); color:#fff; border:none; border-radius:50%;
+    cursor:pointer; font-size:14px; padding:0;
+  }
+  .page-remove:hover{ background:#7d0000; }
+
+  .btn{ margin:5px; padding:8px 14px; background:var(--accent); color:#fff; border:none; border-radius:4px; cursor:pointer; font-size:13px; }
+  .btn:hover{ background:#7d0000; }
+  .btn.alt{ background:#444; }
+  .btn.alt:hover{ background:#000; }
+  .actions{ text-align:center; margin:20px 0; }
+  .hint{ font-size:12px; color:#555; max-width:210mm; margin:6px auto; line-height:1.5; }
+  #finalGrandTotal{ font-size:18px; font-weight:bold; margin-top:10px; display:inline-block; }
+
+  @media print{
+    body{ background:#fff; }
+    .actions, .no-print{ display:none !important; }
+    .invoice-box{ margin:0; box-shadow:none; }
+    input, textarea{ border:none !important; }
+    input.manual{ color:#000 !important; }
+    .page-total-row input{ color:#000 !important; }
+  }
+  @page{ size:A4; margin:0; }
+
+  /* ---------------- top bar (bill-total.html / bill-estimate.html) ---------------- */
+  .top-bar{
+    max-width:210mm; margin:14px auto 0; display:flex; justify-content:space-between;
+    align-items:center; flex-wrap:wrap; gap:10px; padding:0 4px;
+  }
+  .top-bar .left, .top-bar .right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .save-status{ font-size:13px; color:#777; }
+  .save-status.dirty{ color:#c00000; font-weight:bold; }
+  .save-status.clean{ color:#1a7a1a; }
+  .save-status.error{ color:#c00000; }
+  .btn.link{ background:none; color:var(--accent); text-decoration:underline; padding:4px 6px; }
+  .btn.link:hover{ background:none; color:#7d0000; }
+
+  /* ---------------- dashboard ---------------- */
+  .dash-wrap{ max-width:1100px; margin:24px auto; padding:0 16px 40px; }
+  .dash-header{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:12px; margin-bottom:18px; }
+  .dash-header h1{ font-size:20px; color:var(--accent); margin:0; }
+  .dash-actions{ display:flex; gap:8px; flex-wrap:wrap; }
+
+  .dash-toolbar{ display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .dash-toolbar input, .dash-toolbar select{
+    padding:8px 10px; border:1px solid #ccc; border-radius:4px; font-size:14px; background:#fff;
+  }
+  .dash-toolbar input{ flex:1; min-width:200px; }
+
+  .dash-status{ text-align:center; color:#777; margin:12px 0; font-size:14px; }
+  .dash-status.error{ color:#c00000; font-weight:bold; }
+
+  .dash-table{ width:100%; border-collapse:collapse; background:#fff; box-shadow:0 0 6px rgba(0,0,0,.08); }
+  .dash-table th, .dash-table td{ border:1px solid #eee; padding:10px; text-align:left; font-size:14px; vertical-align:middle; }
+  .dash-table th{ background:#f5f5f5; color:#333; }
+  .dash-table tr:hover td{ background:#fbfbfb; }
+  .type-pill{ display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; font-weight:bold; }
+  .type-pill.total{ background:#ffe9e9; color:var(--accent); }
+  .type-pill.estimate{ background:#e6f0ff; color:#0a58ca; }
+
+  .btn.small{ padding:5px 10px; font-size:12px; margin:2px; }
+  .btn.danger{ background:#a30000; }
+  .btn.danger:hover{ background:#6e0000; }
+
+  @media (max-width:650px){
+    .dash-table{ font-size:12px; }
+    .dash-table th, .dash-table td{ padding:6px; }
+  }

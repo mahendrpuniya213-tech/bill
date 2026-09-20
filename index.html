@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>बिल डैशबोर्ड</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="dash-wrap">
+  <div class="dash-header">
+    <h1>मोहनलाल पुनिया — सभी बिल</h1>
+    <div class="dash-actions">
+      <button class="btn" onclick="location.href='bill-total.html'">&#10133; नया टोटल बिल</button>
+      <button class="btn alt" onclick="location.href='bill-estimate.html'">&#10133; नया एस्टीमेट</button>
+    </div>
+  </div>
+
+  <div class="dash-toolbar">
+    <input type="text" id="searchBox" placeholder="नाम या बिल नंबर से खोजें...">
+    <select id="filterType">
+      <option value="">सभी टाइप</option>
+      <option value="total">टोटल बिल</option>
+      <option value="estimate">एस्टीमेट</option>
+    </select>
+  </div>
+
+  <div id="status" class="dash-status">लोड हो रहा है...</div>
+
+  <table class="dash-table">
+    <thead>
+      <tr>
+        <th>टाइप</th>
+        <th>बिल नं.</th>
+        <th>नाम</th>
+        <th>तारीख</th>
+        <th>अंतिम अपडेट</th>
+        <th>अमाउंट</th>
+        <th>ऐक्शन</th>
+      </tr>
+    </thead>
+    <tbody id="billTbody"></tbody>
+  </table>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app-common.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>
