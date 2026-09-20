@@ -33,13 +33,14 @@ function render() {
     return;
   }
 
-  filtered.forEach(b => {
+  filtered.forEach((b, idx) => {
     const first = (b.pages && b.pages[0]) || {};
     const editUrl = (b.type === "estimate" ? "bill-estimate.html" : "bill-total.html") + "?id=" + encodeURIComponent(b.id);
     const pillClass = b.type === "estimate" ? "estimate" : "total";
     const pillLabel = b.type === "estimate" ? "एस्टीमेट" : "टोटल बिल";
 
     const tr = document.createElement("tr");
+    tr.style.animationDelay = Math.min(idx * 35, 350) + "ms";
     tr.innerHTML = `
       <td><span class="type-pill ${pillClass}">${pillLabel}</span></td>
       <td>${escapeHtml(first.billNo) || "-"}</td>
