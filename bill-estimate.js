@@ -361,7 +361,7 @@ async function initBill(){
   const id = params.get("id");
 
   if (id){
-    updateSaveStatus("लोड हो रहा है...", "");
+    updateSaveStatus("लोड हो रहा है...", "busy");
     try {
       const data = await BillStore.load(id);
       if (data){
@@ -470,8 +470,8 @@ function calculateGrandTotal(){
   document.querySelectorAll(".allTotal").forEach(el => { el.textContent = txt; });
 }
 
-/* ---------------- PDF ---------------- */
-function downloadPDF(){
+/* ---------------- PDF (download + native share) ---------------- */
+function preparePrintDOM(){
   const element = document.getElementById("pages");
 
   const hidden = [...element.querySelectorAll(".no-print, .page-remove")];
@@ -487,29 +487,86 @@ function downloadPDF(){
   const boxes = [...element.querySelectorAll(".invoice-box")];
   boxes.forEach(b => { b.style.margin = "0"; b.style.boxShadow = "none"; });
 
-  const restore = () => {
-    hidden.forEach(el => { el.style.display = el.dataset.prevDisplay || ""; });
-    fields.forEach(el => {
-      el.style.color = el.dataset.prevColor || "";
-      if (el.dataset.ph){ el.placeholder = el.dataset.ph; delete el.dataset.ph; }
-    });
-    boxes.forEach(b => { b.style.margin = ""; b.style.boxShadow = ""; });
-    syncPages();
+  return {
+    element, boxes,
+    restore(){
+      hidden.forEach(el => { el.style.display = el.dataset.prevDisplay || ""; });
+      fields.forEach(el => {
+        el.style.color = el.dataset.prevColor || "";
+        if (el.dataset.ph){ el.placeholder = el.dataset.ph; delete el.dataset.ph; }
+      });
+      boxes.forEach(b => { b.style.margin = ""; b.style.boxShadow = ""; });
+      syncPages();
+    }
   };
+}
 
-  const opt = {
+function pdfFileName(){
+  const firstBillNo = document.querySelector(".invoice-box .billNo");
+  const raw = (firstBillNo && firstBillNo.value ? firstBillNo.value : "Estimate").trim();
+  const safe = raw.replace(/[^\w\-]+/g, "_").slice(0, 60) || "Estimate";
+  return safe + ".pdf";
+}
+
+function pdfOptions(filename, element){
+  return {
     margin: 0,
-    filename: "Estimate.pdf",
+    filename,
     image: { type: "jpeg", quality: 1 },
     html2canvas: { scale: 2, useCORS: true, scrollY: 0, windowWidth: element.scrollWidth },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
     pagebreak: { mode: ["css", "legacy"], avoid: "tr" }
   };
+}
+
+function downloadPDF(){
+  const { element, boxes, restore } = preparePrintDOM();
+  const filename = pdfFileName();
+  const opt = pdfOptions(filename, element);
 
   html2pdf().set(opt).from(element).toPdf().get("pdf").then(pdf => {
     const n = pdf.internal.getNumberOfPages();
     for (let i = n; i > boxes.length; i--) pdf.deletePage(i);
   }).save().then(restore).catch(err => { console.error(err); restore(); });
+}
+
+async function sharePDF(){
+  const btn = document.getElementById("shareBtn");
+
+  if (!navigator.share || !navigator.canShare){
+    alert("यह ब्राउज़र सीधे शेयर करना सपोर्ट नहीं करता (यह ज़्यादातर फ़ोन पर काम करता है, कंप्यूटर पर नहीं)। कृपया \"Save as PDF\" से पहले डाउनलोड करें, फिर उसे WhatsApp/Bluetooth से भेजें।");
+    return;
+  }
+
+  const { element, boxes, restore } = preparePrintDOM();
+  const filename = pdfFileName();
+  const opt = pdfOptions(filename, element);
+
+  if (btn){ btn.dataset.prevHtml = btn.innerHTML; btn.disabled = true; btn.textContent = "तैयार हो रहा है..."; }
+
+  try {
+    const pdf = await html2pdf().set(opt).from(element).toPdf().get("pdf");
+    const n = pdf.internal.getNumberOfPages();
+    for (let i = n; i > boxes.length; i--) pdf.deletePage(i);
+    const blob = pdf.output("blob");
+    restore();
+
+    const file = new File([blob], filename, { type: "application/pdf" });
+
+    if (navigator.canShare({ files: [file] })){
+      await navigator.share({ files: [file], title: filename });
+    } else {
+      alert("यह डिवाइस सीधे PDF फ़ाइल शेयर करना सपोर्ट नहीं करता। \"Save as PDF\" से डाउनलोड करके शेयर करें।");
+    }
+  } catch (err){
+    restore();
+    if (err && err.name !== "AbortError"){ // user closing the share sheet isn't an error
+      console.error(err);
+      alert("शेयर करने में गड़बड़ी हुई:\n" + err.message);
+    }
+  } finally {
+    if (btn){ btn.disabled = false; btn.innerHTML = btn.dataset.prevHtml || "&#128228; शेयर करें"; }
+  }
 }
 
 /* ---------------- init ---------------- */
