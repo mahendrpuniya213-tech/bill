@@ -15,13 +15,15 @@
 
    4) Save this file and reload the site. The dashboard should start
       working and any bill you save will now be visible from any device.
-   ========================================================================= */
+
+  
+</script>   ========================================================================= */
 
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY_HERE",
-  authDomain: "PASTE_YOUR_PROJECT.firebaseapp.com",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_PROJECT.appspot.com",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+  apiKey:  "AIzaSyBeYMalGHTJGZ-PAlYNxRqV8JvDKozi_0M",
+  authDomain: "bill-a0d20.firebaseapp.com",
+  projectId:  "bill-a0d20",
+  storageBucket:"bill-a0d20.firebasestorage.app",
+  messagingSenderId: "429803177539",
+  appId:  "1:429803177539:web:e6b772d6ac36a59ff9b6f6"
 };
