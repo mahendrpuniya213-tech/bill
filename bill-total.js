@@ -37,7 +37,7 @@ function pageTemplate(){
     </thead>
     <tbody>
       <tr class="page-total-row">
-        <td colspan="5" class="ptl"> PAGE TOTAL</td>
+        <td colspan="5" class="ptl">PAGE TOTAL</td>
         <td><input type="text" class="pageTotal" value="&#8377; 0.00"></td>
       </tr>
     </tbody>
