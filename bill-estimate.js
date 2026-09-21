@@ -121,6 +121,21 @@ function removeRow(){
   reflow();
 }
 
+/* once the LAST row's details field gets typed into, quietly add a new blank row after it —
+   manual "नई पंक्ति जोड़ें" / "पंक्ति हटाएं" buttons still work exactly as before */
+function maybeAutoAddRow(detailTextEl){
+  const row = detailTextEl.closest(".item-row");
+  if (!row || row.dataset.autoRowAdded === "1") return;
+  if (detailTextEl.value.trim() === "") return;
+
+  const allRows = document.querySelectorAll("#pages .item-row");
+  const lastRow = allRows[allRows.length - 1];
+  if (row !== lastRow) return;
+
+  row.dataset.autoRowAdded = "1";
+  addRow();
+}
+
 /* ---------------- housekeeping ---------------- */
 function syncPages(sourcePage){
   const pages = [...document.querySelectorAll(".invoice-box")];
@@ -401,6 +416,7 @@ document.getElementById("pages").addEventListener("input", e => {
 
   if (t.matches(".detail-text")){
     autosizeTextarea(t);
+    maybeAutoAddRow(t);
   }
 
   if (t.matches(OVERRIDABLE)){
