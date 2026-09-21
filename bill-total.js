@@ -37,7 +37,7 @@ function pageTemplate(){
     </thead>
     <tbody>
       <tr class="page-total-row">
-        <td colspan="5" class="ptl">पेज कुल / PAGE TOTAL</td>
+        <td colspan="5" class="ptl"> PAGE TOTAL</td>
         <td><input type="text" class="pageTotal" value="&#8377; 0.00"></td>
       </tr>
     </tbody>
@@ -45,12 +45,7 @@ function pageTemplate(){
 
   <div class="spacer"></div>
 
-  <div class="footer">
-    
-    <div>TOTAL AMOUNT: <input type="text" class="grandTotal" value="&#8377; 0.00"></div>
-  </div>
-
-  <div class="all-total hidden">सभी पेजों का कुल / GRAND TOTAL: <span class="allTotal">&#8377; 0.00</span></div>
+  <div class="all-total hidden"> GRAND TOTAL: <span class="allTotal">&#8377; 0.00</span></div>
   <div class="page-num"></div>`;
 }
 
@@ -309,9 +304,7 @@ function serializeBill(){
       billNo: box.querySelector(".billNo").value,
       rows,
       pageTotal: box.querySelector(".pageTotal").value,
-      pageTotalManual: box.querySelector(".pageTotal").classList.contains("manual"),
-      grandTotal: box.querySelector(".grandTotal").value,
-      grandTotalManual: box.querySelector(".grandTotal").classList.contains("manual")
+      pageTotalManual: box.querySelector(".pageTotal").classList.contains("manual")
     };
   });
 
@@ -351,8 +344,6 @@ function deserializeBill(data){
 
     box.querySelector(".pageTotal").value = pageData.pageTotal || "\u20B9 0.00";
     if (pageData.pageTotalManual) box.querySelector(".pageTotal").classList.add("manual");
-    box.querySelector(".grandTotal").value = pageData.grandTotal || "\u20B9 0.00";
-    if (pageData.grandTotalManual) box.querySelector(".grandTotal").classList.add("manual");
   });
 
   reflow();
@@ -422,7 +413,7 @@ async function initBill(){
 }
 
 /* ---------------- manual override handling ---------------- */
-const OVERRIDABLE = ".sqft, .total, .pageTotal, .grandTotal";
+const OVERRIDABLE = ".sqft, .total, .pageTotal";
 
 document.getElementById("pages").addEventListener("input", e => {
   const t = e.target;
@@ -453,7 +444,7 @@ function resetManual(){
   if (!confirm("सभी मैनुअल वैल्यू हटाकर दोबारा अपने आप गिनना शुरू करें?")) return;
   document.querySelectorAll("input.manual").forEach(el => {
     el.classList.remove("manual");
-    if (el.matches(".sqft, .total, .pageTotal, .grandTotal")) el.value = "";
+    if (el.matches(".sqft, .total, .pageTotal")) el.value = "";
   });
   document.querySelectorAll(".item-row").forEach(calcRow);
   reflow();
@@ -519,14 +510,10 @@ function calculateGrandTotal(){
     box.querySelectorAll(".item-row .total").forEach(input => { sum += num(input.value); });
 
     const pageTotalCell = box.querySelector(".pageTotal");
-    const grandInput    = box.querySelector(".grandTotal");
 
     let pageTotal = sum;
     if (pageTotalCell.classList.contains("manual")) pageTotal = num(pageTotalCell.value);
     else pageTotalCell.value = "\u20B9 " + sum.toFixed(2);
-
-    if (!grandInput.classList.contains("manual")) grandInput.value = "\u20B9 " + pageTotal.toFixed(2);
-    else pageTotal = num(grandInput.value);
 
     finalTotal += pageTotal;
   });
