@@ -128,6 +128,21 @@ function removeRow(){
   reflow();
 }
 
+/* once the LAST row's details field gets typed into, quietly add a new blank row after it —
+   manual "नई पंक्ति जोड़ें" / "पंक्ति हटाएं" buttons still work exactly as before */
+function maybeAutoAddRow(detailTextEl){
+  const row = detailTextEl.closest(".item-row");
+  if (!row || row.dataset.autoRowAdded === "1") return;
+  if (detailTextEl.value.trim() === "") return;
+
+  const allRows = document.querySelectorAll("#pages .item-row");
+  const lastRow = allRows[allRows.length - 1];
+  if (row !== lastRow) return;
+
+  row.dataset.autoRowAdded = "1";
+  addRow();
+}
+
 /* ---------------- housekeeping ---------------- */
 function syncPages(sourcePage){
   const pages = [...document.querySelectorAll(".invoice-box")];
@@ -416,6 +431,7 @@ document.getElementById("pages").addEventListener("input", e => {
 
   if (t.matches(".detail-text")){
     autosizeTextarea(t);
+    maybeAutoAddRow(t);
   }
 
   if (t.matches(OVERRIDABLE)){
@@ -476,17 +492,21 @@ function calcRow(row){
   const rateInput = row.querySelector(".rate");
   const totalInput= row.querySelector(".total");
 
+  const qty = qtyInput.value.trim() === "" ? 1 : num(qtyInput.value);
+
+  // SQ.foot shows the TOTAL sq.foot for this line (per-unit measurement × QTY) —
+  // so changing QTY visibly updates the SQ.foot number itself, not just a hidden multiplier.
   if (!sqftInput.classList.contains("manual") && measure.value.trim() !== ""){
-    const sqft = parseMeasurement(measure.value);
-    sqftInput.value = sqft > 0 ? sqft.toFixed(2) : "";
+    const perUnitSqft = parseMeasurement(measure.value);
+    const totalSqft = perUnitSqft * qty;
+    sqftInput.value = totalSqft > 0 ? totalSqft.toFixed(2) : "";
   }
 
-  const sqft = num(sqftInput.value);
-  const qty  = qtyInput.value.trim() === "" ? 1 : num(qtyInput.value);
+  const sqft = num(sqftInput.value); // already includes QTY when auto-calculated above
   const rate = num(rateInput.value);
 
   if (!totalInput.classList.contains("manual")){
-    const t = sqft * qty * rate;
+    const t = sqft * rate;
     totalInput.value = t ? "\u20B9 " + t.toFixed(2) : "";
   }
 }
